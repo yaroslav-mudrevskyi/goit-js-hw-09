@@ -1,8 +1,10 @@
 const feedbackForm = document.querySelector('.feedback-form');
 
-const formData = { email: '', message: '' };
-
 const LOCAL_KEY = 'feedback-form-state';
+const formData = JSON.parse(localStorage.getItem(LOCAL_KEY)) || {
+  email: '',
+  message: '',
+};
 
 feedbackForm.addEventListener('input', event => {
   formData[event.target.name] = event.target.value.trim();
@@ -10,18 +12,12 @@ feedbackForm.addEventListener('input', event => {
   localStorage.setItem(LOCAL_KEY, JSON.stringify(formData));
 });
 
-function initFormData() {
+document.addEventListener('DOMContentLoaded', () => {
   const userData = JSON.parse(localStorage.getItem(LOCAL_KEY));
-  if (!userData) return;
 
-  const keys = Object.keys(userData);
-
-  keys.forEach(key => {
-    feedbackForm.elements[key].value = userData[key];
-  });
-}
-
-initFormData();
+  feedbackForm.elements.email.value = userData?.email || '';
+  feedbackForm.elements.message.value = userData?.message || '';
+});
 
 feedbackForm.addEventListener('submit', handleSubmit);
 
