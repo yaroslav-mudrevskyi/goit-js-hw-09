@@ -1,7 +1,7 @@
 const feedbackForm = document.querySelector('.feedback-form');
 
 const LOCAL_KEY = 'feedback-form-state';
-const formData = JSON.parse(localStorage.getItem(LOCAL_KEY)) || {
+const formData = loadFromLs(LOCAL_KEY) || {
   email: '',
   message: '',
 };
@@ -9,11 +9,11 @@ const formData = JSON.parse(localStorage.getItem(LOCAL_KEY)) || {
 feedbackForm.addEventListener('input', event => {
   formData[event.target.name] = event.target.value.trim();
 
-  localStorage.setItem(LOCAL_KEY, JSON.stringify(formData));
+  saveToLs(LOCAL_KEY, formData);
 });
 
 document.addEventListener('DOMContentLoaded', () => {
-  const userData = JSON.parse(localStorage.getItem(LOCAL_KEY));
+  const userData = loadFromLs(LOCAL_KEY);
 
   feedbackForm.elements.email.value = userData?.email || '';
   feedbackForm.elements.message.value = userData?.message || '';
@@ -30,4 +30,19 @@ function handleSubmit(event) {
   console.log(formData);
   localStorage.removeItem(LOCAL_KEY);
   feedbackForm.reset();
+}
+
+function saveToLs(key, value) {
+  const json = JSON.stringify(value);
+  localStorage.setItem(key, json);
+}
+
+function loadFromLs(key) {
+  const json = localStorage.getItem(key);
+  try {
+    const data = JSON.parse(json);
+    return data;
+  } catch {
+    return json;
+  }
 }
